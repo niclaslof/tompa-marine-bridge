@@ -72,7 +72,7 @@ export interface BoatData {
   timestamp: number
 }
 
-export type TabId = 'bridge' | 'chart' | 'harbors' | 'engine' | 'weather' | 'safety' | 'log'
+export type TabId = 'timetable' | 'bridge' | 'chart' | 'harbors' | 'engine' | 'weather' | 'safety' | 'log'
 
 export interface Tab {
   id: TabId

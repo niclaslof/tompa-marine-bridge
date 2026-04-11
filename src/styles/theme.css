@@ -10,6 +10,14 @@ body {
   color: #c8d6e5;
   font-family: 'Outfit', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, opacity;
+  transition-timing-function: ease-out;
+  transition-duration: 150ms;
 }
 
 /* Scrollbar styling */
@@ -24,12 +32,68 @@ body {
   background: #1a3a4a;
   border-radius: 3px;
 }
+::-webkit-scrollbar-thumb:hover {
+  background: #2a4a5a;
+}
+
+/* Night mode — red overlay for preserving night vision */
+.night-mode {
+  filter: brightness(0.6) sepia(1) hue-rotate(-30deg) saturate(3);
+}
 
 /* Animations */
-@keyframes pulse-red {
+@keyframes pulse-slow {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0.5; }
 }
-.animate-pulse-red {
-  animation: pulse-red 1s ease-in-out infinite;
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, #e8891c, #f1c40f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass effect panels */
+.glass {
+  background: rgba(10, 30, 40, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Custom select styling */
+select option {
+  background: #0a1e28;
+  color: #c8d6e5;
+}
+
+/* Touch-friendly targets for Pi */
+@media (max-width: 1024px) {
+  button, select, input {
+    min-height: 44px;
+  }
+}
+
+/* Tabular nums for data displays */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

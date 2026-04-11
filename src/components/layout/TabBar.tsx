@@ -1,13 +1,13 @@
 import type { TabId } from '@/types/marine'
 
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'bridge', label: 'Brygga' },
-  { id: 'chart', label: 'Karta' },
-  { id: 'harbors', label: 'Hamnar' },
-  { id: 'engine', label: 'Maskin' },
-  { id: 'weather', label: 'Väder' },
-  { id: 'safety', label: 'Säkerhet' },
-  { id: 'log', label: 'Logg' },
+const TABS: { id: TabId; label: string; icon: string }[] = [
+  { id: 'timetable', label: 'Tidtabell', icon: '⏱' },
+  { id: 'bridge', label: 'Brygga', icon: '🧭' },
+  { id: 'chart', label: 'Karta', icon: '🗺' },
+  { id: 'engine', label: 'Maskin', icon: '⚙' },
+  { id: 'weather', label: 'Väder', icon: '🌊' },
+  { id: 'safety', label: 'Säkerhet', icon: '🛟' },
+  { id: 'log', label: 'Logg', icon: '📋' },
 ]
 
 interface TabBarProps {
@@ -28,6 +28,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
               : 'text-marine-text-dim hover:text-marine-text hover:bg-marine-panel-light/50'
             }`}
         >
+          <span className="hidden sm:inline mr-1">{tab.icon}</span>
           {tab.label}
         </button>
       ))}

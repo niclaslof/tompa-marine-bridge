@@ -4,10 +4,19 @@ import { useBoatData } from '@/hooks/useBoatData'
 import { Header } from '@/components/layout/Header'
 import { TabBar } from '@/components/layout/TabBar'
 import { BridgeTab } from '@/components/bridge/BridgeTab'
+import { TimetableTab } from '@/components/timetable/TimetableTab'
+import { EngineTab } from '@/components/engine/EngineTab'
+import { WeatherTab } from '@/components/weather/WeatherTab'
+import { SafetyTab } from '@/components/safety/SafetyTab'
+import { LogTab } from '@/components/log/LogTab'
+import { ChartTab } from '@/components/chart/ChartTab'
+import { DocsPage } from '@/components/docs/DocsPage'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>('bridge')
+  const [activeTab, setActiveTab] = useState<TabId>('timetable')
   const [clock, setClock] = useState('')
+  const [nightMode, setNightMode] = useState(false)
+  const [showDocs, setShowDocs] = useState(false)
   const data = useBoatData()
 
   useEffect(() => {
@@ -20,27 +29,28 @@ export default function App() {
     return () => clearInterval(id)
   }, [])
 
+  if (showDocs) {
+    return <DocsPage onBack={() => setShowDocs(false)} />
+  }
+
   return (
-    <div className="min-h-screen bg-marine-bg text-marine-text flex flex-col">
-      <Header clock={clock} />
+    <div className={`min-h-screen bg-marine-bg text-marine-text flex flex-col ${nightMode ? 'night-mode' : ''}`}>
+      <Header
+        clock={clock}
+        nightMode={nightMode}
+        onToggleNight={() => setNightMode(!nightMode)}
+        onShowDocs={() => setShowDocs(true)}
+      />
       <TabBar active={activeTab} onChange={setActiveTab} />
       <main className="flex-1 overflow-auto">
+        {activeTab === 'timetable' && <TimetableTab />}
         {activeTab === 'bridge' && <BridgeTab data={data} />}
-        {activeTab === 'chart' && <Placeholder label="Karta" />}
-        {activeTab === 'harbors' && <Placeholder label="Hamnar" />}
-        {activeTab === 'engine' && <Placeholder label="Maskin" />}
-        {activeTab === 'weather' && <Placeholder label="Väder" />}
-        {activeTab === 'safety' && <Placeholder label="Säkerhet" />}
-        {activeTab === 'log' && <Placeholder label="Logg" />}
+        {activeTab === 'chart' && <ChartTab data={data} />}
+        {activeTab === 'engine' && <EngineTab />}
+        {activeTab === 'weather' && <WeatherTab />}
+        {activeTab === 'safety' && <SafetyTab />}
+        {activeTab === 'log' && <LogTab />}
       </main>
-    </div>
-  )
-}
-
-function Placeholder({ label }: { label: string }) {
-  return (
-    <div className="flex items-center justify-center h-64">
-      <span className="text-marine-text-dim font-mono text-lg">{label} — kommer snart</span>
     </div>
   )
 }
