@@ -1,0 +1,18 @@
+{
+  "name": "Tompa Marine Bridge",
+  "short_name": "TOMPA",
+  "description": "Digitalt tidtabellsystem för pendelbåtar",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#040e14",
+  "theme_color": "#040e14",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%23e8891c'/><text x='256' y='340' font-size='300' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>T</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

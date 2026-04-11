@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
-  FERRY_LINES, LINE_80_CIRCUITS, LINE_89_CIRCUITS,
+  FERRY_LINES, getCircuitsForLine,
   findMeetings, parseTimeToMinutes, getLegDistance,
-  type Circuit, type CircuitDeparture, type Pier, type FerryLine, type Meeting
+  type Circuit, type Pier, type FerryLine, type Meeting
 } from '@/data/ferryRoutes'
 
 export interface TimetableState {
@@ -11,19 +11,18 @@ export interface TimetableState {
   currentStop: StopInfo | null
   nextStop: StopInfo | null
   countdown: CountdownInfo
-  meetings: Meeting[]
+  meetings: Meeting[]        // upcoming meetings (next 30 min)
+  allMeetings: Meeting[]     // all meetings for this circuit
   suggestedSpeed: number | null
   progress: number
   gpsClock: string
   allStops: StopInfo[]
-  selectLine: (lineId: string) => void
-  selectCircuit: (circuitId: string) => void
 }
 
 export interface StopInfo {
   pier: Pier
-  departure: CircuitDeparture
-  distanceNm: number  // real navigational distance to this stop from previous
+  departure: { pierId: string; time: string }
+  distanceNm: number
   isPast: boolean
   isCurrent: boolean
 }
@@ -31,7 +30,7 @@ export interface StopInfo {
 export interface CountdownInfo {
   minutes: number
   seconds: number
-  isLate: boolean  // not "overdue" — no stress language
+  isLate: boolean
   totalSeconds: number
 }
 
@@ -40,24 +39,8 @@ function nowMinutes(): number {
   return now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60
 }
 
-function getCircuits(lineId: string): Circuit[] {
-  return lineId === 'L80' ? LINE_80_CIRCUITS : LINE_89_CIRCUITS
-}
-
-function findActiveCircuit(circuits: Circuit[]): Circuit {
-  const now = nowMinutes()
-  for (const circuit of circuits) {
-    const lastDep = circuit.departures[circuit.departures.length - 1]
-    if (parseTimeToMinutes(lastDep.time) >= now - 5) {
-      return circuit
-    }
-  }
-  return circuits[0]
-}
-
-export function useTimetable(): TimetableState {
-  const [lineId, setLineId] = useState('L80')
-  const [circuitId, setCircuitId] = useState<string | null>(null)
+// Controlled hook: receives lineId and circuitId from parent
+export function useTimetable(lineId: string, circuitId: string): TimetableState {
   const [gpsClock, setGpsClock] = useState('')
   const [tick, setTick] = useState(0)
 
@@ -66,14 +49,10 @@ export function useTimetable(): TimetableState {
     [lineId]
   )
 
-  const circuits = useMemo(() => getCircuits(lineId), [lineId])
+  const circuits = useMemo(() => getCircuitsForLine(lineId), [lineId])
 
   const selectedCircuit = useMemo(() => {
-    if (circuitId) {
-      const found = circuits.find(c => c.id === circuitId)
-      if (found) return found
-    }
-    return findActiveCircuit(circuits)
+    return circuits.find(c => c.id === circuitId) || circuits[0]
   }, [circuitId, circuits])
 
   useEffect(() => {
@@ -87,47 +66,27 @@ export function useTimetable(): TimetableState {
     return () => clearInterval(iv)
   }, [])
 
-  const selectLine = useCallback((id: string) => {
-    setLineId(id)
-    setCircuitId(null)
-  }, [])
-
-  const selectCircuit = useCallback((id: string) => {
-    setCircuitId(id)
-  }, [])
-
   const computed = useMemo(() => {
     const now = nowMinutes()
     const deps = selectedCircuit.departures
     const piers = selectedLine.piers
     const legs = selectedLine.legs
 
-    // Build stop info list with real distances
     const allStops: StopInfo[] = deps.map((d, i) => {
       const pier = piers.find(p => p.id === d.pierId) || piers[0]
       const prevDep = i > 0 ? deps[i - 1] : null
       const dist = prevDep ? getLegDistance(legs, prevDep.pierId, d.pierId) : 0
       const depTime = parseTimeToMinutes(d.time)
-
-      return {
-        pier,
-        departure: d,
-        distanceNm: dist,
-        isPast: depTime < now - 1,
-        isCurrent: false,
-      }
+      return { pier, departure: d, distanceNm: dist, isPast: depTime < now - 1, isCurrent: false }
     })
 
-    // Find current stop (first non-past)
     let currentIdx = allStops.findIndex(s => !s.isPast)
     if (currentIdx === -1) currentIdx = allStops.length - 1
-
     allStops[currentIdx].isCurrent = true
 
     const currentStop = allStops[currentIdx]
     const nextStop = allStops[currentIdx + 1] || null
 
-    // Countdown to current departure
     const depTime = parseTimeToMinutes(currentStop.departure.time)
     const diffSec = Math.round((depTime - now) * 60)
     const countdown: CountdownInfo = {
@@ -137,10 +96,8 @@ export function useTimetable(): TimetableState {
       totalSeconds: diffSec,
     }
 
-    // Progress
     const progress = deps.length > 1 ? currentIdx / (deps.length - 1) : 0
 
-    // Suggested speed (using real navigational distance)
     let suggestedSpeed: number | null = null
     if (nextStop && nextStop.distanceNm > 0) {
       const nextDepTime = parseTimeToMinutes(nextStop.departure.time)
@@ -154,17 +111,22 @@ export function useTimetable(): TimetableState {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCircuit, selectedLine, tick])
 
-  // Meeting predictions — find where circuits overlap at piers
+  // All meetings for this circuit (cross-line enabled)
+  const allMeetings = useMemo(() => {
+    return findMeetings(lineId, selectedCircuit)
+  }, [lineId, selectedCircuit])
+
+  // Upcoming meetings only (next 30 min, max 4)
   const meetings = useMemo(() => {
-    return findMeetings(lineId, selectedCircuit, circuits, selectedLine.piers, 5)
+    const now = nowMinutes()
+    return allMeetings
       .filter(m => {
-        // Only show upcoming meetings (within next 30 min)
-        const now = nowMinutes()
         const meetTime = parseTimeToMinutes(m.myTime)
         return meetTime >= now - 2 && meetTime <= now + 30
       })
-      .slice(0, 4) // max 4 meetings shown
-  }, [selectedCircuit, circuits, selectedLine.piers, lineId, tick]) // eslint-disable-line react-hooks/exhaustive-deps
+      .slice(0, 4)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allMeetings, tick])
 
   return {
     selectedLine,
@@ -173,11 +135,10 @@ export function useTimetable(): TimetableState {
     nextStop: computed.nextStop,
     countdown: computed.countdown,
     meetings,
+    allMeetings,
     suggestedSpeed: computed.suggestedSpeed,
     progress: computed.progress,
     gpsClock,
     allStops: computed.allStops,
-    selectLine,
-    selectCircuit,
   }
 }

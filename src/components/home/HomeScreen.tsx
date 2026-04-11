@@ -1,0 +1,141 @@
+import { useState, useMemo } from 'react'
+import { FERRY_LINES, getCircuitsForLine, getCurrentSeason, parseTimeToMinutes } from '@/data/ferryRoutes'
+
+interface HomeScreenProps {
+  onStart: (lineId: string, circuitId: string) => void
+}
+
+export function HomeScreen({ onStart }: HomeScreenProps) {
+  const [selectedLineId, setSelectedLineId] = useState<string | null>(null)
+  const [selectedCircuitId, setSelectedCircuitId] = useState<string | null>(null)
+  const season = getCurrentSeason()
+
+  const selectedLine = FERRY_LINES.find(l => l.id === selectedLineId)
+  const circuits = useMemo(
+    () => selectedLineId ? getCircuitsForLine(selectedLineId) : [],
+    [selectedLineId]
+  )
+
+  // Find the closest active circuit
+  const now = new Date()
+  const nowMin = now.getHours() * 60 + now.getMinutes()
+
+  const activeCircuitId = useMemo(() => {
+    for (const c of circuits) {
+      const lastDep = c.departures[c.departures.length - 1]
+      if (parseTimeToMinutes(lastDep.time) >= nowMin - 5) return c.id
+    }
+    return circuits[0]?.id
+  }, [circuits, nowMin])
+
+  const handleLineSelect = (lineId: string) => {
+    setSelectedLineId(lineId)
+    setSelectedCircuitId(null)
+  }
+
+  const handleStart = () => {
+    if (selectedLineId && selectedCircuitId) {
+      onStart(selectedLineId, selectedCircuitId)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-marine-bg text-marine-text flex flex-col items-center justify-center p-6">
+      {/* Logo */}
+      <div className="mb-8 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-marine-accent to-amber-600 flex items-center justify-center mx-auto mb-3">
+          <span className="text-white font-bold text-3xl">T</span>
+        </div>
+        <h1 className="text-2xl font-sans font-bold text-marine-text-bright">TOMPA</h1>
+        <p className="text-xs font-mono text-marine-text-dim mt-1">
+          {season.label} {now.getFullYear()}
+        </p>
+      </div>
+
+      {/* Step 1: Line selection */}
+      {!selectedLineId && (
+        <div className="w-full max-w-md space-y-3">
+          <div className="text-center text-sm font-mono text-marine-text-dim mb-4">Välj linje</div>
+          {FERRY_LINES.map(line => (
+            <button
+              key={line.id}
+              onClick={() => handleLineSelect(line.id)}
+              className="w-full bg-marine-panel border border-marine-border rounded-xl p-5 text-left hover:border-marine-accent transition-colors"
+            >
+              <div className="text-lg font-sans font-bold text-marine-text-bright">{line.name}</div>
+              <div className="text-sm font-mono text-marine-text-dim mt-1">{line.description}</div>
+              <div className="text-xs font-mono text-marine-text-dim mt-2">
+                {getCircuitsForLine(line.id).length} omlopp
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Step 2: Circuit/Omlopp selection */}
+      {selectedLineId && !selectedCircuitId && (
+        <div className="w-full max-w-md">
+          <button
+            onClick={() => setSelectedLineId(null)}
+            className="text-sm font-mono text-marine-text-dim hover:text-marine-text mb-4"
+          >
+            ← Byt linje
+          </button>
+          <div className="text-center mb-4">
+            <div className="text-lg font-sans font-semibold text-marine-accent">{selectedLine?.name}</div>
+            <div className="text-xs font-mono text-marine-text-dim">{selectedLine?.description}</div>
+            <div className="text-xs font-mono text-marine-text-dim mt-1">Välj omlopp</div>
+          </div>
+          <div className="space-y-1.5 max-h-[50vh] overflow-y-auto">
+            {circuits.map(c => {
+              const isActive = c.id === activeCircuitId
+              const lastDep = c.departures[c.departures.length - 1]
+              const isPast = parseTimeToMinutes(lastDep.time) < nowMin - 5
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setSelectedCircuitId(c.id)}
+                  disabled={isPast}
+                  className={`w-full rounded-lg p-3 text-left font-mono text-sm transition-colors flex items-center justify-between ${
+                    isPast
+                      ? 'bg-marine-panel/50 text-marine-text-dim/30 cursor-not-allowed'
+                      : isActive
+                        ? 'bg-marine-accent/15 border border-marine-accent/30 text-marine-accent'
+                        : 'bg-marine-panel border border-marine-border text-marine-text hover:border-marine-accent/50'
+                  }`}
+                >
+                  <span className="font-semibold">{c.label}</span>
+                  <span className={isPast ? '' : 'text-marine-text-dim'}>avg. {c.startTime}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Step 3: Confirm */}
+      {selectedLineId && selectedCircuitId && (
+        <div className="w-full max-w-md text-center space-y-4">
+          <button
+            onClick={() => setSelectedCircuitId(null)}
+            className="text-sm font-mono text-marine-text-dim hover:text-marine-text"
+          >
+            ← Byt omlopp
+          </button>
+          <div>
+            <div className="text-lg font-sans font-semibold text-marine-accent">{selectedLine?.name}</div>
+            <div className="text-sm font-mono text-marine-text mt-1">
+              {circuits.find(c => c.id === selectedCircuitId)?.label} — avg. {circuits.find(c => c.id === selectedCircuitId)?.startTime}
+            </div>
+          </div>
+          <button
+            onClick={handleStart}
+            className="w-full bg-marine-accent hover:bg-marine-accent-dim text-white font-sans font-bold text-lg py-4 rounded-xl transition-colors"
+          >
+            Starta
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
