@@ -23,10 +23,10 @@
 
 /* ─── Light theme ───────────────────────────────────── */
 [data-theme="light"] {
-  --marine-bg:          240 244 248;
+  --marine-bg:          248 249 250;
   --marine-panel:       255 255 255;
-  --marine-panel-light: 248 250 251;
-  --marine-border:      226 232 240;
+  --marine-panel-light: 243 244 246;
+  --marine-border:      229 231 235;
   --marine-accent:      232 137 28;
   --marine-accent-dim:  201 115 22;
   --marine-text:        55 65 81;
