@@ -11,8 +11,8 @@ export function Compass({ heading, cog }: CompassProps) {
       <div className="relative w-48 h-48 md:w-56 md:h-56">
         <svg viewBox="0 0 200 200" className="w-full h-full">
           {/* Outer ring */}
-          <circle cx="100" cy="100" r="95" fill="none" stroke="#1a3a4a" strokeWidth="2" />
-          <circle cx="100" cy="100" r="85" fill="none" stroke="#1a3a4a" strokeWidth="1" />
+          <circle cx="100" cy="100" r="95" fill="none" stroke="#e2e8f0" strokeWidth="2" />
+          <circle cx="100" cy="100" r="85" fill="none" stroke="#e2e8f0" strokeWidth="1" />
 
           {/* Rotating compass rose */}
           <g
@@ -31,7 +31,7 @@ export function Compass({ heading, cog }: CompassProps) {
                   y1={isMajor ? 10 : 14}
                   x2="100"
                   y2={10 + len}
-                  stroke={isMajor ? '#c8d6e5' : '#6b8a9e'}
+                  stroke={isMajor ? '#374151' : '#9ca3af'}
                   strokeWidth={isMajor ? 2 : 1}
                   transform={`rotate(${deg}, 100, 100)`}
                 />
@@ -52,7 +52,7 @@ export function Compass({ heading, cog }: CompassProps) {
                   x={x}
                   y={y + 4}
                   textAnchor="middle"
-                  fill={isN ? '#e74c3c' : '#c8d6e5'}
+                  fill={isN ? '#dc2626' : '#374151'}
                   fontSize={isN ? 16 : 12}
                   fontWeight={isN ? 'bold' : 'normal'}
                   fontFamily="JetBrains Mono, monospace"
@@ -63,7 +63,7 @@ export function Compass({ heading, cog }: CompassProps) {
             })}
 
             {/* North triangle */}
-            <polygon points="100,20 96,35 104,35" fill="#e74c3c" />
+            <polygon points="100,20 96,35 104,35" fill="#dc2626" />
           </g>
 
           {/* COG indicator (fixed orange triangle at top) */}
@@ -88,7 +88,7 @@ export function Compass({ heading, cog }: CompassProps) {
             y="100"
             textAnchor="middle"
             dominantBaseline="central"
-            fill="#f0f4f8"
+            fill="#111827"
             fontSize="28"
             fontWeight="bold"
             fontFamily="JetBrains Mono, monospace"

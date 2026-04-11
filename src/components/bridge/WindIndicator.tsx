@@ -18,12 +18,12 @@ export function WindIndicator({ awa, aws, tws, gust }: WindIndicatorProps) {
         {/* Wind angle indicator */}
         <div className="w-24 h-24 flex-shrink-0">
           <svg viewBox="0 0 100 100" className="w-full h-full">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#1a3a4a" strokeWidth="1.5" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" strokeWidth="1.5" />
             {/* Port/Starboard arcs */}
-            <path d="M 50 10 A 40 40 0 0 0 50 90" fill="none" stroke="#e74c3c" strokeWidth="1" opacity="0.3" />
-            <path d="M 50 10 A 40 40 0 0 1 50 90" fill="none" stroke="#2ecc71" strokeWidth="1" opacity="0.3" />
+            <path d="M 50 10 A 40 40 0 0 0 50 90" fill="none" stroke="#dc2626" strokeWidth="1" opacity="0.4" />
+            <path d="M 50 10 A 40 40 0 0 1 50 90" fill="none" stroke="#059669" strokeWidth="1" opacity="0.4" />
             {/* Ship */}
-            <line x1="50" y1="38" x2="50" y2="62" stroke="#6b8a9e" strokeWidth="2" />
+            <line x1="50" y1="38" x2="50" y2="62" stroke="#9ca3af" strokeWidth="2" />
             {/* Wind arrow */}
             <line
               x1="50" y1="50" x2={arrowX} y2={arrowY}

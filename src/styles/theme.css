@@ -6,8 +6,8 @@
 
 body {
   margin: 0;
-  background: #040e14;
-  color: #c8d6e5;
+  background: #f0f4f8;
+  color: #374151;
   font-family: 'Outfit', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -26,14 +26,14 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #040e14;
+  background: #f0f4f8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a3a4a;
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a4a5a;
+  background: #94a3b8;
 }
 
 /* Night mode — red overlay for preserving night vision */
@@ -67,7 +67,7 @@ body {
 
 /* Gradient text utility */
 .text-gradient {
-  background: linear-gradient(135deg, #e8891c, #f1c40f);
+  background: linear-gradient(135deg, #e8891c, #d97706);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -75,15 +75,15 @@ body {
 
 /* Glass effect panels */
 .glass {
-  background: rgba(10, 30, 40, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
 /* Custom select styling */
 select option {
-  background: #0a1e28;
-  color: #c8d6e5;
+  background: #ffffff;
+  color: #111827;
 }
 
 /* Touch-friendly targets for Pi */
