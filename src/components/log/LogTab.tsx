@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { jitter } from '@/data/simulation'
 
 interface LogEntry {
   id: string
@@ -46,11 +45,11 @@ export function LogTab() {
   }
 
   const trip: TripData = {
-    distance: jitter(12.4, 0),
-    avgSpeed: jitter(8.2, 0),
-    maxSpeed: jitter(11.5, 0),
+    distance: 12.4,
+    avgSpeed: 8.2,
+    maxSpeed: 11.5,
     duration: '03:45',
-    fuelUsed: jitter(67, 0),
+    fuelUsed: 67,
   }
 
   const crew = [

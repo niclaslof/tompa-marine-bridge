@@ -1,7 +1,7 @@
-import type { MeetingInfo } from '@/hooks/useTimetable'
+import type { Meeting } from '@/data/ferryRoutes'
 
 interface MeetingWarningProps {
-  meetings: MeetingInfo[]
+  meetings: Meeting[]
 }
 
 export function MeetingWarning({ meetings }: MeetingWarningProps) {
@@ -9,37 +9,33 @@ export function MeetingWarning({ meetings }: MeetingWarningProps) {
 
   return (
     <div className="space-y-2">
-      <div className="text-xs font-mono uppercase tracking-wider text-marine-text-dim">
-        Mötesvarning
+      <div className="text-[10px] font-mono uppercase tracking-widest text-marine-text-dim">
+        Möten
       </div>
       {meetings.map((m, i) => (
         <div
           key={i}
-          className={`rounded-xl border p-3 flex items-center gap-3 ${
+          className={`rounded-xl border p-3 ${
             m.isNarrow
-              ? 'bg-red-500/10 border-red-500/30'
-              : 'bg-amber-500/10 border-amber-500/30'
+              ? 'bg-amber-500/10 border-amber-500/20'
+              : 'bg-marine-panel border-marine-border'
           }`}
         >
-          <div className={`text-2xl ${m.isNarrow ? 'animate-pulse' : ''}`}>
-            {m.isNarrow ? '⚠️' : '🚢'}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-sans text-sm text-marine-text-bright">
+                {m.pierName}
+                {m.isNarrow && <span className="ml-2 text-amber-400 text-xs font-mono">trång</span>}
+              </div>
+              <div className="text-xs font-mono text-marine-text-dim mt-0.5">
+                {m.otherCircuitLabel} avg. {m.otherTime}
+              </div>
+            </div>
+            <div className="text-right text-xs font-mono">
+              <div className="text-marine-text-dim">du</div>
+              <div className="text-marine-text">{m.myTime}</div>
+            </div>
           </div>
-          <div className="flex-1">
-            <div className="font-sans font-semibold text-sm text-marine-text-bright">
-              {m.vesselName}
-            </div>
-            <div className="text-xs font-mono text-marine-text-dim">
-              {m.pierName} kl {m.time}
-              {m.isNarrow && (
-                <span className="ml-2 text-red-400 font-bold">TRÅNG PASSAGE</span>
-              )}
-            </div>
-          </div>
-          {m.isNarrow && (
-            <div className="text-xs font-mono text-red-400 text-right">
-              Överväg att<br/>invänta
-            </div>
-          )}
         </div>
       ))}
     </div>

@@ -1,40 +1,29 @@
 interface CountdownDisplayProps {
   minutes: number
   seconds: number
-  isOverdue: boolean
+  isLate: boolean
   pierName: string
   departureTime: string
 }
 
-export function CountdownDisplay({ minutes, seconds, isOverdue, pierName, departureTime }: CountdownDisplayProps) {
-  const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+export function CountdownDisplay({ minutes, seconds, isLate, pierName, departureTime }: CountdownDisplayProps) {
+  const mm = String(minutes).padStart(2, '0')
+  const ss = String(seconds).padStart(2, '0')
+
+  // No stress: white when on time, soft blue when late. Never red, never "FÖRSENAD".
+  const timeColor = isLate ? 'text-blue-400' : 'text-marine-text-bright'
 
   return (
-    <div className="bg-marine-panel rounded-2xl border border-marine-border p-6 text-center">
-      {/* Status label */}
-      <div className={`text-xs font-mono uppercase tracking-widest mb-2 ${
-        isOverdue ? 'text-red-400' : 'text-marine-text-dim'
-      }`}>
-        {isOverdue ? 'Försenad' : 'Avgång om'}
+    <div className="text-center py-4">
+      {/* The countdown — biggest thing on screen */}
+      <div className={`text-8xl sm:text-9xl font-mono font-bold tracking-tight leading-none tabular-nums ${timeColor}`}>
+        {isLate && '−'}{mm}:{ss}
       </div>
 
-      {/* Big countdown */}
-      <div className={`text-7xl md:text-8xl font-mono font-bold tracking-tight leading-none ${
-        isOverdue
-          ? 'text-red-400 animate-pulse'
-          : minutes < 1
-            ? 'text-amber-400'
-            : 'text-marine-text-bright'
-      }`}>
-        {isOverdue && '-'}{timeStr}
-      </div>
-
-      {/* Pier name and time */}
-      <div className="mt-4 space-y-1">
-        <div className="text-xl font-sans font-semibold text-marine-accent">{pierName}</div>
-        <div className="text-marine-text-dim font-mono text-sm">
-          Planerad avgång: <span className="text-marine-text">{departureTime}</span>
-        </div>
+      {/* Current pier + scheduled time */}
+      <div className="mt-3 space-y-0.5">
+        <div className="text-lg font-sans font-semibold text-marine-accent">{pierName}</div>
+        <div className="text-marine-text-dim font-mono text-sm">avg. {departureTime}</div>
       </div>
     </div>
   )
