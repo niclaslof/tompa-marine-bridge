@@ -1,23 +1,29 @@
 /** @type {import('tailwindcss').Config} */
+const cssVar = (name) => ({ opacityValue, opacityVariable }) => {
+  if (opacityValue !== undefined) return `rgb(var(--marine-${name}) / ${opacityValue})`
+  if (opacityVariable !== undefined) return `rgb(var(--marine-${name}) / var(${opacityVariable}, 1))`
+  return `rgb(var(--marine-${name}))`
+}
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
         marine: {
-          bg: 'rgb(var(--marine-bg) / <alpha-value>)',
-          panel: 'rgb(var(--marine-panel) / <alpha-value>)',
-          'panel-light': 'rgb(var(--marine-panel-light) / <alpha-value>)',
-          border: 'rgb(var(--marine-border) / <alpha-value>)',
-          accent: 'rgb(var(--marine-accent) / <alpha-value>)',
-          'accent-dim': 'rgb(var(--marine-accent-dim) / <alpha-value>)',
-          text: 'rgb(var(--marine-text) / <alpha-value>)',
-          'text-bright': 'rgb(var(--marine-text-bright) / <alpha-value>)',
-          'text-dim': 'rgb(var(--marine-text-dim) / <alpha-value>)',
-          green: 'rgb(var(--marine-green) / <alpha-value>)',
-          red: 'rgb(var(--marine-red) / <alpha-value>)',
-          yellow: 'rgb(var(--marine-yellow) / <alpha-value>)',
-          blue: 'rgb(var(--marine-blue) / <alpha-value>)',
+          bg:            cssVar('bg'),
+          panel:         cssVar('panel'),
+          'panel-light': cssVar('panel-light'),
+          border:        cssVar('border'),
+          accent:        cssVar('accent'),
+          'accent-dim':  cssVar('accent-dim'),
+          text:          cssVar('text'),
+          'text-bright': cssVar('text-bright'),
+          'text-dim':    cssVar('text-dim'),
+          green:         cssVar('green'),
+          red:           cssVar('red'),
+          yellow:        cssVar('yellow'),
+          blue:          cssVar('blue'),
         },
       },
       fontFamily: {
