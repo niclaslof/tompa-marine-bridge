@@ -69,23 +69,18 @@ export function HomeScreen({ onStart }: HomeScreenProps) {
           <div className="space-y-1.5 max-h-[60vh] overflow-y-auto">
             {circuits.map(c => {
               const isActive = c.id === activeCircuitId
-              const lastDep = c.departures[c.departures.length - 1]
-              const isPast = parseTimeToMinutes(lastDep.time) < nowMin - 5
               return (
                 <button
                   key={c.id}
-                  disabled={isPast}
                   onClick={() => onStart(selectedLineId, c.id)}
                   className={`w-full rounded-lg p-3 text-left font-mono text-sm transition-colors flex items-center justify-between ${
-                    isPast
-                      ? 'bg-marine-panel/50 text-marine-text-dim/30 cursor-not-allowed'
-                      : isActive
-                        ? 'bg-marine-accent/15 border border-marine-accent/30 text-marine-accent'
-                        : 'bg-marine-panel border border-marine-border text-marine-text hover:border-marine-accent/50'
+                    isActive
+                      ? 'bg-marine-accent/15 border border-marine-accent/30 text-marine-accent'
+                      : 'bg-marine-panel border border-marine-border text-marine-text hover:border-marine-accent/50'
                   }`}
                 >
                   <span className="font-semibold">{c.label}</span>
-                  <span className={isPast ? '' : 'text-marine-text-dim'}>avg. {c.startTime}</span>
+                  <span className="text-marine-text-dim">avg. {c.startTime}</span>
                 </button>
               )
             })}
