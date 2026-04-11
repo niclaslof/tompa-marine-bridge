@@ -23,8 +23,8 @@ export function ChartTab({ data }: ChartTabProps) {
           {/* Simulated chart background */}
           <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `
-              linear-gradient(0deg, #e2e8f0 1px, transparent 1px),
-              linear-gradient(90deg, #e2e8f0 1px, transparent 1px)
+              linear-gradient(0deg, rgb(var(--marine-border)) 1px, transparent 1px),
+              linear-gradient(90deg, rgb(var(--marine-border)) 1px, transparent 1px)
             `,
             backgroundSize: '40px 40px',
           }} />

@@ -1,11 +1,13 @@
 interface HeaderProps {
   clock: string
   nightMode: boolean
+  theme: 'dark' | 'light'
   onToggleNight: () => void
+  onToggleTheme: () => void
   onShowDocs: () => void
 }
 
-export function Header({ clock, nightMode, onToggleNight, onShowDocs }: HeaderProps) {
+export function Header({ clock, nightMode, theme, onToggleNight, onToggleTheme, onShowDocs }: HeaderProps) {
   return (
     <header className="bg-marine-panel border-b border-marine-border px-4 py-2 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -30,7 +32,20 @@ export function Header({ clock, nightMode, onToggleNight, onShowDocs }: HeaderPr
           📖
         </button>
 
-        {/* Night mode toggle */}
+        {/* Day/Night theme toggle */}
+        <button
+          onClick={onToggleTheme}
+          className={`p-1.5 rounded-lg transition-colors text-sm font-mono font-bold ${
+            theme === 'light'
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-marine-panel-light text-marine-text-dim hover:text-marine-text'
+          }`}
+          title={theme === 'dark' ? 'Byt till dagläge' : 'Byt till mörkt läge'}
+        >
+          {theme === 'dark' ? '☀' : '🌙'}
+        </button>
+
+        {/* Night vision toggle */}
         <button
           onClick={onToggleNight}
           className={`p-1.5 rounded-lg transition-colors text-sm ${
@@ -38,9 +53,9 @@ export function Header({ clock, nightMode, onToggleNight, onShowDocs }: HeaderPr
               ? 'bg-red-900/30 text-red-400'
               : 'bg-marine-panel-light text-marine-text-dim hover:text-marine-text'
           }`}
-          title={nightMode ? 'Dagläge' : 'Nattläge'}
+          title={nightMode ? 'Stäng av nattseende' : 'Nattseende (röd dimning)'}
         >
-          {nightMode ? '🌙' : '☀️'}
+          {nightMode ? '🔴' : '👁'}
         </button>
 
         {/* Clock */}

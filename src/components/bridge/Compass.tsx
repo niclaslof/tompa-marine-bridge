@@ -5,14 +5,16 @@ interface CompassProps {
 
 const CARDINAL = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
 
+const V = (name: string) => `rgb(var(--marine-${name}))`
+
 export function Compass({ heading, cog }: CompassProps) {
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-48 h-48 md:w-56 md:h-56">
         <svg viewBox="0 0 200 200" className="w-full h-full">
           {/* Outer ring */}
-          <circle cx="100" cy="100" r="95" fill="none" stroke="#e2e8f0" strokeWidth="2" />
-          <circle cx="100" cy="100" r="85" fill="none" stroke="#e2e8f0" strokeWidth="1" />
+          <circle cx="100" cy="100" r="95" fill="none" stroke={V('border')} strokeWidth="2" />
+          <circle cx="100" cy="100" r="85" fill="none" stroke={V('border')} strokeWidth="1" />
 
           {/* Rotating compass rose */}
           <g
@@ -31,7 +33,7 @@ export function Compass({ heading, cog }: CompassProps) {
                   y1={isMajor ? 10 : 14}
                   x2="100"
                   y2={10 + len}
-                  stroke={isMajor ? '#374151' : '#9ca3af'}
+                  stroke={isMajor ? V('text') : V('text-dim')}
                   strokeWidth={isMajor ? 2 : 1}
                   transform={`rotate(${deg}, 100, 100)`}
                 />
@@ -52,7 +54,7 @@ export function Compass({ heading, cog }: CompassProps) {
                   x={x}
                   y={y + 4}
                   textAnchor="middle"
-                  fill={isN ? '#dc2626' : '#374151'}
+                  fill={isN ? V('red') : V('text')}
                   fontSize={isN ? 16 : 12}
                   fontWeight={isN ? 'bold' : 'normal'}
                   fontFamily="JetBrains Mono, monospace"
@@ -63,32 +65,32 @@ export function Compass({ heading, cog }: CompassProps) {
             })}
 
             {/* North triangle */}
-            <polygon points="100,20 96,35 104,35" fill="#dc2626" />
+            <polygon points="100,20 96,35 104,35" fill={V('red')} />
           </g>
 
           {/* COG indicator (fixed orange triangle at top) */}
           <polygon
             points="100,6 96,16 104,16"
-            fill="#e8891c"
+            fill={V('accent')}
             transform={`rotate(${cog - heading}, 100, 100)`}
             style={{ transition: 'transform 0.5s ease-out' }}
           />
 
           {/* Ship icon (fixed center) */}
           <g transform="translate(100,100)">
-            <line x1="0" y1="-18" x2="0" y2="18" stroke="#e8891c" strokeWidth="3" />
-            <line x1="-8" y1="6" x2="0" y2="-18" stroke="#e8891c" strokeWidth="2" />
-            <line x1="8" y1="6" x2="0" y2="-18" stroke="#e8891c" strokeWidth="2" />
-            <line x1="-10" y1="10" x2="10" y2="10" stroke="#e8891c" strokeWidth="2" />
+            <line x1="0" y1="-18" x2="0" y2="18" stroke={V('accent')} strokeWidth="3" />
+            <line x1="-8" y1="6" x2="0" y2="-18" stroke={V('accent')} strokeWidth="2" />
+            <line x1="8" y1="6" x2="0" y2="-18" stroke={V('accent')} strokeWidth="2" />
+            <line x1="-10" y1="10" x2="10" y2="10" stroke={V('accent')} strokeWidth="2" />
           </g>
 
-          {/* Heading readout at top center */}
+          {/* Heading readout at center */}
           <text
             x="100"
             y="100"
             textAnchor="middle"
             dominantBaseline="central"
-            fill="#111827"
+            fill={V('text-bright')}
             fontSize="28"
             fontWeight="bold"
             fontFamily="JetBrains Mono, monospace"

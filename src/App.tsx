@@ -16,6 +16,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('timetable')
   const [clock, setClock] = useState('')
   const [nightMode, setNightMode] = useState(false)
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [showDocs, setShowDocs] = useState(false)
   const data = useBoatData()
 
@@ -29,6 +30,10 @@ export default function App() {
     return () => clearInterval(id)
   }, [])
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+  }, [theme])
+
   if (showDocs) {
     return <DocsPage onBack={() => setShowDocs(false)} />
   }
@@ -38,7 +43,9 @@ export default function App() {
       <Header
         clock={clock}
         nightMode={nightMode}
+        theme={theme}
         onToggleNight={() => setNightMode(!nightMode)}
+        onToggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
         onShowDocs={() => setShowDocs(true)}
       />
       <TabBar active={activeTab} onChange={setActiveTab} />
