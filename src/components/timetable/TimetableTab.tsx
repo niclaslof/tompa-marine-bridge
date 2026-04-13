@@ -1,4 +1,5 @@
 import type { TimetableState } from '@/hooks/useTimetable'
+import { RouteMap } from './RouteMap'
 
 interface TimetableTabProps {
   tt: TimetableState
@@ -9,7 +10,9 @@ export function TimetableTab({ tt, onSwitchCircuit: _onSwitchCircuit }: Timetabl
   const { currentStop, nextStop, afterStop, upcomingStops, countdown, suggestedSpeed, gpsClock, meetings } = tt
 
   return (
-    <div className="max-w-lg mx-auto p-3 space-y-3">
+    <div className="flex gap-3 p-3 h-[calc(100vh-90px)]">
+    {/* Left: Timetable */}
+    <div className="flex-1 max-w-lg space-y-3 overflow-y-auto">
       {/* GPS Clock */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
@@ -106,6 +109,16 @@ export function TimetableTab({ tt, onSwitchCircuit: _onSwitchCircuit }: Timetabl
 
       {/* Simulator controls */}
       <SimulatorBar tt={tt} />
+    </div>
+
+    {/* Right: Map */}
+    <div className="hidden lg:block w-[400px] flex-shrink-0">
+      <RouteMap
+        allStops={tt.allStops}
+        currentStop={currentStop}
+        nextStop={nextStop}
+      />
+    </div>
     </div>
   )
 }
