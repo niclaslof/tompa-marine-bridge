@@ -13,8 +13,8 @@ export function NextStopCard({ stop, suggestedSpeed }: NextStopCardProps) {
       <div className="text-[10px] font-mono uppercase tracking-widest text-marine-text-dim mb-1">Nästa</div>
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-base font-sans font-semibold text-marine-text-bright">{stop.pier.name}</div>
-          <div className="text-sm font-mono text-marine-text-dim">avg. {stop.departure.time}</div>
+          <div className="text-base font-sans font-semibold text-marine-text-bright">{stop.pierName}</div>
+          <div className="text-sm font-mono text-marine-text-dim">avg. {stop.time}</div>
         </div>
         <div className="text-right font-mono text-sm">
           {stop.distanceNm > 0 && (

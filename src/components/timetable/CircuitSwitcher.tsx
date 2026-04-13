@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getCircuitsForLine, parseTimeToMinutes } from '@/data/ferryRoutes'
+import { getCircuitsForLine, parseTimeToMinutes, flattenCircuit } from '@/data/ferryRoutes'
 import type { FerryLine, Circuit } from '@/data/ferryRoutes'
 
 interface CircuitSwitcherProps {
@@ -33,8 +33,9 @@ export function CircuitSwitcher({ line, currentCircuit, onSwitch }: CircuitSwitc
       </div>
       <div className="space-y-1 max-h-48 overflow-y-auto">
         {circuits.map(c => {
-          const lastDep = c.departures[c.departures.length - 1]
-          const isPast = parseTimeToMinutes(lastDep.time) < nowMin - 5
+          const flat = flattenCircuit(c, line.piers)
+          const lastDep = flat[flat.length - 1]
+          const isPast = !lastDep || parseTimeToMinutes(lastDep.time) < nowMin - 5
           const isCurrent = c.id === currentCircuit.id
           return (
             <button

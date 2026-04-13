@@ -28,7 +28,7 @@ export function useScheduleTracking(
   // Auto-detect: when currentStop changes, log the transition
   useEffect(() => {
     if (!currentStop) return
-    const key = `${circuitId}-${currentStop.departure.pierId}-${currentStop.departure.time}`
+    const key = `${circuitId}-${currentStop.pierId}-${currentStop.time}`
     if (key === lastLoggedRef.current) return
     lastLoggedRef.current = key
 
@@ -38,7 +38,7 @@ export function useScheduleTracking(
     const now = new Date()
     const actualTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`
 
-    const [sh, sm] = currentStop.departure.time.split(':').map(Number)
+    const [sh, sm] = currentStop.time.split(':').map(Number)
     const scheduledSec = sh * 3600 + sm * 60
     const actualSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
     const deviation = actualSec - scheduledSec
@@ -47,9 +47,9 @@ export function useScheduleTracking(
       date: now.toISOString().split('T')[0],
       lineId,
       circuitId,
-      pierId: currentStop.departure.pierId,
-      pierName: currentStop.pier.name,
-      scheduledTime: currentStop.departure.time,
+      pierId: currentStop.pierId,
+      pierName: currentStop.pierName,
+      scheduledTime: currentStop.time,
       actualTime,
       deviationSeconds: deviation,
     }
@@ -66,7 +66,7 @@ export function useScheduleTracking(
     const now = new Date()
     const actualTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`
 
-    const [sh, sm] = currentStop.departure.time.split(':').map(Number)
+    const [sh, sm] = currentStop.time.split(':').map(Number)
     const scheduledSec = sh * 3600 + sm * 60
     const actualSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
 
@@ -74,9 +74,9 @@ export function useScheduleTracking(
       date: now.toISOString().split('T')[0],
       lineId,
       circuitId,
-      pierId: currentStop.departure.pierId,
-      pierName: currentStop.pier.name,
-      scheduledTime: currentStop.departure.time,
+      pierId: currentStop.pierId,
+      pierName: currentStop.pierName,
+      scheduledTime: currentStop.time,
       actualTime,
       deviationSeconds: actualSec - scheduledSec,
     }

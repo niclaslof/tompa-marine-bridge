@@ -27,11 +27,11 @@ export function OverviewTab({ tt }: OverviewTabProps) {
         <div className="divide-y divide-marine-border/50">
           {tt.allStops.map((stop, i) => {
             const meeting = tt.allMeetings.find(m =>
-              m.pierName === stop.pier.name && m.myTime === stop.departure.time
+              m.pierName === stop.pierName && m.myTime === stop.time
             )
             return (
               <div
-                key={`${stop.departure.pierId}-${stop.departure.time}-${i}`}
+                key={`${stop.pierId}-${stop.time}-${i}`}
                 className={`flex items-center px-4 py-2.5 text-sm font-mono ${
                   stop.isCurrent ? 'bg-marine-accent/10' :
                   stop.isPast ? 'opacity-30' : ''
@@ -42,8 +42,8 @@ export function OverviewTab({ tt }: OverviewTabProps) {
                   stop.isPast ? 'bg-marine-text-dim/30' : 'bg-marine-border'
                 }`} />
                 <span className={`flex-1 ${stop.isCurrent ? 'text-marine-accent font-semibold' : 'text-marine-text'}`}>
-                  {stop.pier.name}
-                  {stop.pier.narrow && !stop.isPast && <span className="ml-1.5 text-[10px] text-amber-400">trång</span>}
+                  {stop.pierName}
+                  {tt.selectedLine.piers.find(p => p.id === stop.pierId)?.narrow && !stop.isPast && <span className="ml-1.5 text-[10px] text-amber-400">trång</span>}
                 </span>
                 {meeting && !stop.isPast && (
                   <span className="text-[10px] text-amber-400 mr-3">
@@ -55,7 +55,7 @@ export function OverviewTab({ tt }: OverviewTabProps) {
                 )}
                 <span className={`tabular-nums w-12 text-right ${
                   stop.isCurrent ? 'text-marine-accent font-semibold' : 'text-marine-text-bright'
-                }`}>{stop.departure.time}</span>
+                }`}>{stop.time}</span>
               </div>
             )
           })}

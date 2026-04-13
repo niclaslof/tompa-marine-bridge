@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { FERRY_LINES, getCircuitsForLine, getCurrentSeason, parseTimeToMinutes } from '@/data/ferryRoutes'
+import { FERRY_LINES, getCircuitsForLine, getCurrentSeason, parseTimeToMinutes, flattenCircuit } from '@/data/ferryRoutes'
 
 interface HomeScreenProps {
   onStart: (lineId: string, circuitId: string) => void
@@ -20,8 +20,9 @@ export function HomeScreen({ onStart }: HomeScreenProps) {
 
   const activeCircuitId = useMemo(() => {
     for (const c of circuits) {
-      const lastDep = c.departures[c.departures.length - 1]
-      if (parseTimeToMinutes(lastDep.time) >= nowMin - 5) return c.id
+      const flat = flattenCircuit(c, selectedLine?.piers ?? [])
+      const lastDep = flat[flat.length - 1]
+      if (lastDep && parseTimeToMinutes(lastDep.time) >= nowMin - 5) return c.id
     }
     return circuits[0]?.id
   }, [circuits, nowMin])

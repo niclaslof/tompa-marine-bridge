@@ -11,7 +11,7 @@ export function CircuitProgress({ stops }: CircuitProgressProps) {
       <div className="space-y-0.5">
         {stops.map((stop, i) => (
           <div
-            key={`${stop.departure.pierId}-${stop.departure.time}-${i}`}
+            key={`${stop.pierId}-${stop.time}-${i}`}
             className={`flex items-center gap-2 py-1.5 px-2 rounded text-sm font-mono transition-colors ${
               stop.isCurrent
                 ? 'bg-marine-accent/10 text-marine-accent font-semibold'
@@ -24,8 +24,8 @@ export function CircuitProgress({ stops }: CircuitProgressProps) {
               stop.isCurrent ? 'bg-marine-accent' :
               stop.isPast ? 'bg-marine-text-dim/30' : 'bg-marine-border'
             }`} />
-            <span className="flex-1 truncate">{stop.pier.name}</span>
-            <span className="tabular-nums">{stop.departure.time}</span>
+            <span className="flex-1 truncate">{stop.pierName}</span>
+            <span className="tabular-nums">{stop.time}</span>
           </div>
         ))}
       </div>
